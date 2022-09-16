@@ -1,0 +1,176 @@
+/* font-family: 'Secular One', sans-serif; */
+@import url('https://fonts.googleapis.com/css2?family=Secular+One&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Barlow:wght@300&display=swap');
+@font-face {
+  font-family: 'NanumBarunGothic';
+  font-style: normal;
+  font-weight: 300;
+  src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot');
+  src: url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.eot?#iefix') format('embedded-opentype'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.woff') format('woff'), url('//cdn.jsdelivr.net/font-nanumlight/1.0/NanumBarunGothicWebLight.ttf') format('truetype');
+}
+ .nanumbarungothic * {
+  font-family: 'NanumBarunGothic', sans-serif;
+}
+/* font-family: 'Barlow', sans-serif; */
+body {
+  font-family: 'NanumBarunGothic';
+}
+li,ol,ul{
+  list-style: none;
+}
+a{
+  text-decoration: none;
+  color: #333;
+}
+
+/* nav bar */
+.main_title{
+  font-weight: 700;
+  text-align: center;
+  padding: 5%;
+  font: 40px/1 'Secular One';
+  vertical-align: baseline;
+}
+
+/* [index.ejs] */
+.container{
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.link{
+  /* margin: auto; */
+  width: 30%;
+  height: 200px;
+  border-radius: 10px;
+  text-align: center;
+  line-height: 200px;
+  color: #555;
+  font-size: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.link>span{
+  transition: .5s;
+  font-weight: 700;
+}
+
+.link> span:hover{
+  font-weight: 900;
+  font-size: 22px;
+  color: #000;
+}
+
+.emoji{
+  display: block
+  
+}
+.link1{
+  margin: 10px 10px 0 0;
+  background-color: rgb(246, 211, 217);
+}
+.link2{
+  margin: 10px 10px 0 0;
+  background-color: rgb(252, 252, 212)
+}
+.link3{
+  margin: 10px 0 0 0;
+  background-color: rgb(209, 235, 245)
+}
+.link4{
+  margin: 10px 10px 0 0;
+  background-color: #c8c8c8
+}
+.link5{
+  margin: 10px 10px 0 0;
+  background-color: #c8c8c8
+}
+.link6{
+  margin: 10px 0 0 0;
+  background-color: #c8c8c8
+}
+
+/* [user.ejs] */
+/* board */
+* {
+  margin: 0;
+  box-sizing: border-box;
+}
+body {
+  background-color: #eee;
+}
+ul,
+ol {
+  list-style: none;
+  padding: 0;
+}
+a {
+  text-decoration: none;
+}
+.btn {
+  padding: 5px 10px;
+  border-radius: 10px;
+  margin: 0 5px;
+  font-weight: bold;
+  color: #000;
+}
+.btn.orange {
+  background-color: orange;
+}
+.btn.blue {
+  background-color: dodgerblue;
+}
+.btn.red {
+  background-color: coral;
+}
+.inner {
+  position: absolute;
+  width: 1200px;
+  height: 100vh;
+  left: 0;
+  right: 0;
+  margin: auto;
+  padding: 50px;
+}
+.inner .board_container {}
+.inner .board_container .board_header {
+  text-align: center;
+}
+.inner .board_container .board_write {
+  margin-top: 30px;
+  text-align: right;
+}
+.inner .board_container .board_write span {
+  margin-right: 30px;
+  font-weight: bold;
+}
+.inner .board_container .board_body {
+  width: 100%;
+  margin-top: 50px;
+}
+.inner .board_container .board_body .board {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.inner .board_container .board_body .board li {
+  width: 100%;
+  border-radius: 30px;
+  border: 1px solid #999;
+  background-color: #fff;
+  margin-bottom: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.inner .board_container .board_body .board li div {
+  margin: 20px 30px;
+}
+.inner .board_container .board_body .board li .title {
+  font-size: 28px;
+}
+.inner .board_container .board_body .board li .content {
+  font-size: 20px;
+}
