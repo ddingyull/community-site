@@ -5,27 +5,29 @@ const express = require('express');
 const router = express.Router();
 
 const mongoClient = require('./mongodb');
+const login = require('./login');
 
-function isLogin(req, res, next) {
-  if (req.session.login || req.user) {
-    next();
-  } else {
-    res.status(300);
-    res.send(
-      '로그인 필요한 서비스 입니다.<br><a href="/login">로그인하러 가기</a>'
-    );
-  }
-}
+// function isLogin(req, res, next) {
+//   if (req.session.login || req.user || req.signedCookies.user) {
+//     next();
+//   } else {
+//     res.status(300);
+//     res.send(
+//       '로그인 필요한 서비스 입니다.<br><a href="/login">로그인하러 가기</a>'
+//     );
+//   }
+// }
 
 const { MongoClient } = require('mongodb');
 const { resourceLimits } = require('worker_threads');
-const { futimesSync } = require('fs');
+const { futimesSync, read } = require('fs');
 const uri =
   'mongodb+srv://ddingyull:1234@cluster0.hl5bvvr.mongodb.net/?retryWrites=true&w=majority';
 
 // 글 전체 목록 보여주기 (콜백함수로 작성된 코드)
 // 보여주기 ://localhost:4000/board/ 주소라고 생각해야함 (파일이 한개 더 들어왔기 때문)
-router.get('/', isLogin, async (req, res) => {
+router.get('/', login.isLogin, async (req, res) => {
+  console.log(req.user);
   const client = await mongoClient.connect();
   const cursor = client.db('node1').collection('board');
   const BOARD = await cursor.find({}).toArray();
@@ -33,23 +35,28 @@ router.get('/', isLogin, async (req, res) => {
   res.render('board', {
     BOARD,
     boardCounters: boardLen,
-    userId: req.session.userId ? req.session.userId : req.user.id,
+    userId: req.session.userId
+      ? req.session.userId
+      : req.user?.id
+      ? req.user.id
+      : req.signedCookies.user,
   });
 });
 
 // 글쓰기 모드로 이동
-router.get('/write', isLogin, (req, res) => {
+router.get('/write', login.isLogin, (req, res) => {
   res.render('write.ejs');
 });
 
 // 글 추가 기능 수행
-router.post('/write', isLogin, async (req, res) => {
+router.post('/write', login.isLogin, async (req, res) => {
   console.log(req.body);
   if (req.body.title && req.body.user) {
     const newBoard = {
-      id: req.session.userId,
+      id: req.session.userId ? req.session.userId : req.user.id,
+      userName: req.user?.name ? req.user.name : req.user?.id,
       title: req.body.title,
-      user: req.body.user,
+      // user: req.body.user,
     };
     const client = await mongoClient.connect();
     const cursor = client.db('node1').collection('board');
@@ -59,7 +66,7 @@ router.post('/write', isLogin, async (req, res) => {
 });
 
 // 글 수정 모드로 이동
-router.get('/modify/title/:title', isLogin, async (req, res) => {
+router.get('/modify/title/:title', login.isLogin, async (req, res) => {
   const client = await mongoClient.connect();
   const cursor = client.db('node1').collection('board');
   const selectedBoard = await cursor.findOne({ title: req.params.title });
@@ -68,7 +75,7 @@ router.get('/modify/title/:title', isLogin, async (req, res) => {
 });
 
 // 글 수정
-router.post('/modify/title/:title', isLogin, async (req, res) => {
+router.post('/modify/title/:title', login.isLogin, async (req, res) => {
   if (req.body.title && req.body.user && req.body.day) {
     const client = await mongoClient.connect();
     const cursor = client.db('node1').collection('board');
@@ -83,7 +90,7 @@ router.post('/modify/title/:title', isLogin, async (req, res) => {
 });
 
 // 글 삭제
-router.delete('/title/:title', isLogin, async (req, res) => {
+router.delete('/title/:title', login.isLogin, async (req, res) => {
   const client = await mongoClient.connect();
   const cursor = client.db('node1').collection('board');
   await cursor.deleteOne({ title: req.params.title });

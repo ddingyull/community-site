@@ -1,10 +1,21 @@
 //@ts-check
 
 const express = require('express');
-const mongoClient = require('./mongodb');
+// const mongoClient = require('./mongodb');
 
 const router = express.Router();
 const passport = require('passport');
+
+const isLogin = (req, res, next) => {
+  if (req.session.login || req.user || req.signedCookies.user) {
+    next();
+  } else {
+    res.status(300);
+    res.send(
+      '로그인 필요한 서비스 입니다.<br><a href="/login">로그인하러 가기</a><br/><a href="/login">메인 페이지로 이동</a>'
+    );
+  }
+};
 
 router.get('/', (req, res) => {
   res.render('login.ejs');
@@ -23,6 +34,11 @@ router.post('/', async (req, res, next) => {
     req.logIn(user, (err) => {
       // login 메서드를 사용해서 user를 가져옴
       if (err) next(err);
+      res.cookie('user', req.body.id, {
+        expires: new Date(Date.now() + 1000 * 60),
+        httpOnly: true,
+        signed: true,
+      });
       res.redirect('/board');
     });
   })(req, res, next);
@@ -31,9 +47,19 @@ router.post('/', async (req, res, next) => {
 // 로그아웃
 router.get('/logout', (req, res, next) => {
   req.logout((err) => {
-    if (err) next(err);
+    if (err) return next(err);
+    return res.redirect('/');
   });
   return res.redirect('/');
 });
 
-module.exports = router;
+router.get('/auth/naver', passport.authenticate('naver'));
+router.get(
+  '/auth/naver/callback',
+  passport.authenticate('naver', {
+    successRedirect: '/board',
+    failureRedirect: '/',
+  })
+);
+
+module.exports = { router, isLogin };

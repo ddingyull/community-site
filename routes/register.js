@@ -16,6 +16,7 @@ router.post('/', async (req, res) => {
 
   if (duplicated === null) {
     const result = await userCursor.insertOne({
+      name: req.body.id,
       id: req.body.id,
       password: req.body.password,
     });

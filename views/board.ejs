@@ -51,7 +51,7 @@
                   <%= BOARD[i].title %>
                 </div>
                 <div class="content m-3">
-                  <%= BOARD[i].user %>
+                  <%= BOARD[i].user ? BOARD[i].name : BOARD[i].id %>
                 </div>
               </li>
         </ul>
