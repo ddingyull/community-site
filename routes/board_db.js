@@ -1,6 +1,8 @@
 //@ts-check;
 
 const express = require('express');
+const multer = require('multer');
+const fs = require('fs'); // 요청한 파일이 없으면 알아서 생성되도록하는!
 
 const router = express.Router();
 
@@ -23,6 +25,22 @@ const { resourceLimits } = require('worker_threads');
 const { futimesSync, read } = require('fs');
 const uri =
   'mongodb+srv://ddingyull:1234@cluster0.hl5bvvr.mongodb.net/?retryWrites=true&w=majority';
+
+const dir = './uploads';
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, dir); //cb없으면 null이고 있으면 dir에 저장
+  },
+  filename: (req, file, cb) => {
+    cb(null, file.fieldname + '_' + Date.now()); //file의 원래 파일명을 fieldname_날짜로 올 것(파일명 겹치지않게)
+  },
+});
+
+const limits = {
+  fileSize: 1024 * 1024 * 2, // 2메가용량으로 제한
+};
+
+const upload = multer({ storage, limits });
 
 // 글 전체 목록 보여주기 (콜백함수로 작성된 코드)
 // 보여주기 ://localhost:4000/board/ 주소라고 생각해야함 (파일이 한개 더 들어왔기 때문)
@@ -49,19 +67,27 @@ router.get('/write', login.isLogin, (req, res) => {
 });
 
 // 글 추가 기능 수행
-router.post('/write', login.isLogin, async (req, res) => {
-  console.log(req.body);
+router.post('/write', login.isLogin, upload.single('img'), async (req, res) => {
+  // 이미지 업로드할 파일이 있는지 확인하는 조건문
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir); //async, await가 자동으로 이미 들어있는 코드
+  console.log(req.file);
+  // 작성한 내용 post되게하는 조건문
   if (req.body.title && req.body.user) {
     const newBoard = {
       id: req.session.userId ? req.session.userId : req.user.id,
       userName: req.user?.name ? req.user.name : req.user?.id,
       title: req.body.title,
+      img: req.file ? req.file.filename : null,
       // user: req.body.user,
     };
     const client = await mongoClient.connect();
     const cursor = client.db('node1').collection('board');
     await cursor.insertOne(newBoard);
     res.redirect('/board');
+  } else {
+    const err = new Error('데이터가 없습니다');
+    err.statusCode = 404;
+    throw err;
   }
 });
 
@@ -86,14 +112,18 @@ router.post('/modify/title/:title', login.isLogin, async (req, res) => {
       }
     );
     res.redirect('/board');
+  } else {
+    const err = new Error('요청 값이 없습니다.');
+    err.statusCode = 404;
+    throw err;
   }
 });
 
 // 글 삭제
-router.delete('/title/:title', login.isLogin, async (req, res) => {
+router.delete('/delete/title/:title', login.isLogin, async (req, res) => {
   const client = await mongoClient.connect();
   const cursor = client.db('node1').collection('board');
-  await cursor.deleteOne({ title: req.params.title });
+  const result = await cursor.deleteOne({ title: req.params.title });
 
   if (result.acknowledged) {
     res.send('삭제 완료');
@@ -103,16 +133,5 @@ router.delete('/title/:title', login.isLogin, async (req, res) => {
     throw err;
   }
 });
-
-// function deleteBoard(title) {
-//   fetch(`board/delete/title/${title}`, {
-//     method: 'delete',
-//     headers: {
-//       'Content-type': 'application/json',
-//     },
-//   }).then((res) => {
-//     location.href = '/board';
-//   });
-// }
 
 module.exports = router;

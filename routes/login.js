@@ -12,7 +12,7 @@ const isLogin = (req, res, next) => {
   } else {
     res.status(300);
     res.send(
-      '로그인 필요한 서비스 입니다.<br><a href="/login">로그인하러 가기</a><br/><a href="/login">메인 페이지로 이동</a>'
+      '로그인 필요한 서비스 입니다.<br><a href="/login">로그인하러 가기</a><br/><a href="/">메인 페이지로 이동</a>'
     );
   }
 };
@@ -59,6 +59,24 @@ router.get(
   passport.authenticate('naver', {
     successRedirect: '/board',
     failureRedirect: '/',
+  })
+);
+
+router.get('/auth/google', passport.authenticate('google', { scope: 'email' }));
+router.get(
+  '/auth/google/callback',
+  passport.authenticate('google', {
+    successRedirect: '/board', // 성공
+    failureRedirect: '/', // 실패
+  })
+);
+
+router.get('/auth/kakao', passport.authenticate('kakao'));
+router.get(
+  '/auth/kakao/callback',
+  passport.authenticate('kakao', {
+    successRedirect: '/board', // 성공
+    failureRedirect: '/', // 실패
   })
 );
 

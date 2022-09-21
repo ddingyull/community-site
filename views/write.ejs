@@ -17,6 +17,13 @@
     <%- include('nav.html')  %>
 
     <form action="/board/write" method="POST">
+
+      <!-- 이미지 업로드 + multer -->
+      <div class="form-floating mb-3 form_img board_fom" style="margin: 20px;" enctype="multipart/form-data">
+        <label for="floatingInput">이미지 업로드</label>
+        <input type="file" name="img"/>
+      </div>
+
       <div class="form-floating mb-3" style="margin: 20px;">
         <input type="text" class="form-control" name="title" required>
         <label for="floatingInput">제목</label>

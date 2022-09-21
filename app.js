@@ -99,6 +99,7 @@ app.use(passport.session());
 
 // 외부에서 접근할 수 있는 기본폴더를 views로 지정(미들웨어임) : 보통은 public,static에 설정
 app.use(express.static('public'));
+app.use('/uploads', express.static('uploads'));
 
 // err넣으려면 제일 앞에 넣어야함
 app.use((err, req, res, next) => {
@@ -135,7 +136,7 @@ app.use('/users', usersRouter); //user라는 주소로 들어오면 userRouter�
 app.use('/posts', postsRouter);
 app.use('/board', boardRouter);
 app.use('/write', writeRouter);
-app.use('/register', registerRouter);
+app.use('/register', registerRouter.router);
 app.use('/login', loginRouter.router);
 
 // // db 링크로 불러와서 4000port로 열기
