@@ -91,6 +91,22 @@ a{
   margin: 10px 0 0 0;
   background-color: #c8c8c8
 }
+.link7{
+  margin: 10px 10px 0 0;
+  background-color: #829c87
+}
+.link8{
+  margin: 10px 10px 0 0;
+  background-color: #53906d
+}
+.link9{
+  margin: 10px 0 0 0;
+  background-color: #79a289
+}
+.link10{
+  margin: 10px 0 0 0;
+  background-color: #f6ff96
+}
 
 /* [user.ejs] */
 /* board */

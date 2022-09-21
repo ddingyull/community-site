@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://kit.fontawesome.com/94132462d8.js" crossorigin="anonymous"></script>
+  <title>chatting service</title>
+</head>
+<body>
+  <input type="text" id="msg" />
+  <a href="javascript:void(0)" onclick="send()"><i class="fa-solid fa-arrow-up"></i></a>
+  <ol id="chat"></ol>
+</body>
+
+<script>
+  let ws = new WebSocket('ws://localhost:3000')
+
+  const inputEl = document.getElementById('msg');
+  const chat = document.getElementById('chat');
+
+  function send() {
+    const msg = inputEl.value;
+    ws.send(msg);
+    inputEl.value = ''
+  }
+
+  ws.onmessage = (e) => {
+    const msgEl = document.createElement('li');
+    msgEl.innerHTML = e.data;
+    console.log(msgEl.innerHTML);
+    chat.appendChild(msgEl);
+  }
+
+
+
+  // 연습
+  //   // 서버에 메세지 보내는 역할
+  //   ws.onopen = (e)=>{
+  //   ws.send('저는 클라이언트입니다');
+  // }
+
+  // // 서버에서 메세지 받는 역할
+  // ws.onmessage = (e) => {
+  //   console.log('저는 서버입니다', e.data);
+  // }
+
+  // // 서버에서 에러발생했을 때 
+  // ws.onerror = (e) => {
+  //   console.log('망했어요');
+  // }
+  </script>
+</html>

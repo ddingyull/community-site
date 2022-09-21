@@ -130,6 +130,7 @@ const registerRouter = require('./routes/register');
 const loginRouter = require('./routes/login');
 const passportRouter = require('./routes/passport');
 passportRouter();
+const chatRouter = require('./routes/chat');
 
 app.use('/', router);
 app.use('/users', usersRouter); //user라는 주소로 들어오면 userRouter로 받아서 라우팅해준다
@@ -138,6 +139,7 @@ app.use('/board', boardRouter);
 app.use('/write', writeRouter);
 app.use('/register', registerRouter.router);
 app.use('/login', loginRouter.router);
+app.use('/chat', chatRouter);
 
 // // db 링크로 불러와서 4000port로 열기
 // let db;
